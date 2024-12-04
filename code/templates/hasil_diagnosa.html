@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Diagnosa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Marko+One&display=swap" rel="stylesheet">
+    <style>
+        /* RESET */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #FFFFFF;
+        }
+
+        /* HEADER NAVBAR */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #83A7ED;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 85px;
+            height: 85px;
+            object-fit: cover;
+            margin-right: 8px;
+        }
+
+        .pawdoct {
+            font-family: 'Marko One', serif;
+            font-size: 2rem;
+            letter-spacing: 0.1em;
+            color: #000;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-menu a {
+            font-size: 1rem;
+            text-decoration: none;
+            color: #000;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #3B41D3;
+        }
+
+        .nav-menu .active {
+            font-weight: 700;
+            color: #000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Result Section */
+        .result-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-section h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .result-section .percentage {
+            font-size: 48px;
+            color: #333;
+            background-color: #FFFFFF;
+            display: inline-block;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .content {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* Symptoms Section */
+        .symptoms, .details {
+            background-color: #FFFFFF;
+            border-radius: 15px;
+            padding: 20px;
+            flex: 1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .symptoms h3, .details h3 {
+            color: #83A7ED;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .symptoms ul, .details ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .symptoms ul li {
+            font-size: 16px;
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .symptoms ul li:before {
+            content: '✔';
+            color: #83A7ED;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .details .disease-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .details .disease-item h4 {
+            font-size: 18px;
+            margin: 0;
+            color: #83A7ED;
+            flex: 1;
+        }
+
+        .details .disease-item p {
+            font-size: 16px;
+            margin: 0;
+            color: #333;
+            font-weight: bold;
+            background-color: #f0f4f7;
+            padding: 5px
+            10px;
+            border-radius: 8px;
+        }
+
+        .solution {
+            background-color: #FFFFFF;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .solution h3 {
+            color: #83A7ED;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .solution p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .preview-btn {
+            display: inline-block;
+            margin: 20px 10px;
+            padding: 10px 20px;
+            background-color: #2567EC;
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .preview-btn:hover {
+            background-color: #1b4ba0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <img src="/static/gambar/GAMBAR_KUCING3_LOGO-removebg-preview.png" alt="Logo">
+            <div class="pawdoct">PAWDOCT</div>
+        </div>
+        <nav class="nav-menu">
+            <a href="{{ url_for('main_bp.home') }}" class="nav-item">Beranda</a>
+            <a href="{{ url_for('main_bp.diagnosa') }}" class="nav-item active">Diagnosa</a>
+            <a href="{{ url_for('main_bp.riwayat') }}" class="nav-item">Riwayat</a>
+            <a href="{{ url_for('main_bp.profile') }}" class="nav-item">Profil Saya</a>
+        </nav>
+    </div>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Result Section -->
+        <div class="result-section">
+            <h2>Hasil Diagnosa:</h2>
+            {% set max_item = hasil | max(attribute='persentase') %}
+            <p class="percentage">{{ max_item.persentase }}%</p>
+            <p>Terindikasi: <strong>{{ max_item.penyakit }}</strong></p>
+            <p>{{ max_item.deskripsi }}</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Symptoms -->
+            <div class="symptoms">
+                <h3>Gejala yang Dipilih</h3>
+                <ul>
+                    {% for gejala in gejala_nama %}
+                        <li>{{ gejala }}</li>  <!-- Menampilkan nama gejala yang dipilih -->
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Details -->
+            <div class="details">
+                <h3>Detail Perhitungan</h3>
+                <ul>
+                    {% for item in hasil %}
+                        <li class="disease-item">
+                            <h4>{{ item.penyakit }}</h4>
+                            <p>{{ item.persentase }}%</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Solution Section -->
+        <div class="solution">
+            <h3>Solusi untuk Penyakit Teridentifikasi</h3>
+            <p>{{ solusi_tertinggi }}</p>
+        </div>
+
+        <!-- Buttons -->
+        <div>
+            <a href="{{ url_for('main_bp.diagnosa') }}" class="preview-btn">Diagnosa Lagi</a>
+            <a href="{{ url_for('main_bp.riwayat') }}" class="preview-btn">Riwayat Diagnosa</a>
+        </div>
+    </div>
+</body>
+</html>

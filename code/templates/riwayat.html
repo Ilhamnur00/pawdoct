@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Diagnosa - PAWDOCT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Marko+One&display=swap" rel="stylesheet">
+    <style>
+        /* RESET */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f7f7f7; /* Warna latar belakang yang lebih lembut */
+        }
+
+        /* HEADER NAVBAR */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #83A7ED;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 85px;
+            height: 85px;
+            object-fit: cover;
+            margin-right: 8px;
+        }
+
+        .pawdoct {
+            font-family: 'Marko One', serif;
+            font-size: 2rem;
+            letter-spacing: 0.1em;
+            color: #000;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-menu a {
+            font-size: 1rem;
+            text-decoration: none;
+            color: #000;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #3B41D3;
+        }
+
+        .nav-menu .active {
+            font-weight: 700;
+            color: #000;
+        }
+
+        /* Centered Title */
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            color: #3B41D3;
+            margin-top: 30px;
+            font-weight: 600;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 30px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            font-size: 14px;
+            color: #555;
+        }
+
+        th {
+            background-color: #83A7ED;
+            color: white;
+            border: none;
+        }
+
+        td {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+
+        tr:hover td {
+            background-color: #f1f1f1;
+        }
+
+        /* Action Button Container */
+        .action-btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .action-btn-container a {
+            display: inline-block;
+            background-color: #83A7ED;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .action-btn-container a:hover {
+            background-color: #6d90c7;
+        }
+
+        /* Button Kembali */
+        .back-btn-container {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            background-color: #83A7ED;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background-color: #6d90c7;
+        }
+
+        </style>
+    </head>
+
+    <body>
+        <div class="header">
+            <div class="logo">
+                <img src="/static/gambar/GAMBAR_KUCING3_LOGO-removebg-preview.png" alt="Logo">
+                <span class="pawdoct">PAWDOCT</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="{{ url_for('main_bp.home') }}" class="nav-item">Beranda</a>
+                <a href="{{ url_for('main_bp.diagnosa') }}" class="nav-item">Diagnosa</a>
+                <a href="{{ url_for('main_bp.riwayat') }}" class="nav-item active">Riwayat</a>
+                <a href="{{ url_for('main_bp.profile') }}" class="nav-item">Profil Saya</a>
+            </nav>
+        </div>
+    
+        <h1>Riwayat Diagnosa Anda</h1>
+    
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama Kucing</th>
+                        <th>Diagnosa Penyakit</th>
+                        <th>Tanggal</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for diagnosa in diagnosa_list %}
+                        <tr>
+                            <td>{{ diagnosa.nama_kucing }}</td>
+                            <td>{{ diagnosa.penyakit_tertinggi }}</td>
+                            <td>{{ diagnosa.tanggal.strftime('%d %B %Y') }}</td>
+                            <td>
+                                <div class="action-btn-container">
+                                    <a href="{{ url_for('main_bp.hasil_diagnosa', id=diagnosa.id) }}" class="action-btn">Lihat Detail</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">Tidak ada riwayat diagnosa.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    
+        <div class="back-btn-container">
+            <a href="{{ url_for('main_bp.home') }}" class="back-btn">Kembali ke Beranda</a>
+        </div>
+    </body>
+    </html>
