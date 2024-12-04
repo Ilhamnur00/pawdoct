@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #F1F6FF;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #5E93FB;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #497CD4;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+
+        .flash-message {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #FFD2D2;
+            border: 1px solid #D8000C;
+            color: #D8000C;
+            border-radius: 5px;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+
+        .flash-message.success {
+            background-color: #DFF2BF;
+            border: 1px solid #4F8A10;
+            color: #4F8A10;
+        }
+
+        .flash-message.fade-out {
+            opacity: 0;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Menambahkan efek fade-out setelah 1 detik
+            const flashMessage = document.querySelector('.flash-message');
+            if (flashMessage) {
+                setTimeout(function() {
+                    flashMessage.classList.add('fade-out');
+                }, 1000); // Pesan akan hilang setelah 1 detik
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Profile</h1>
+
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <label for="username">Username</label>
+            {{ form.username(class_='form-control') }}
+            {% for error in form.username.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+
+            <label for="phone">Phone</label>
+            {{ form.phone(class_='form-control') }}
+            {% for error in form.phone.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+
+            <label for="gender">Gender</label>
+            {{ form.gender(class_='form-control') }}
+            {% for error in form.gender.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+
+            <label for="address">Address</label>
+            {{ form.address(class_='form-control') }}
+            {% for error in form.address.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+
+            <label for="current_password">Current Password</label>
+            {{ form.current_password(class_='form-control') }}
+            {% for error in form.current_password.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
+</body>
+</html>

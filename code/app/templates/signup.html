@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrasi - PAWDOCT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Marko+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Section */
+        .header {
+            background: #5E93FB;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .pawdoct {
+            font-family: 'Marko One', serif;
+            font-size: 2rem;
+            letter-spacing: 0.1em;
+            color: #1B1814;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-menu a {
+            font-size: 1rem;
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #000000;
+        }
+
+        /* Registration Section */
+        .registration-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        /* Registration Form */
+        .form-container {
+            background: #FFFFFF;
+            border-radius: 8px;
+            padding: 40px;
+            width: 45%;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .registration-title {
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 18px;
+            font-weight: 500;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            border: 1px solid #000000;
+            border-radius: 8px;
+        }
+
+        .create-account-btn {
+            width: 100%;
+            padding: 15px;
+            background: #7167EB;
+            border: none;
+            border-radius: 8px;
+            font-size: 24px;
+            color: #FFFFFF;
+            margin-top: 20px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* Information Section */
+        .info-section {
+            width: 45%;
+            text-align: center;
+            font-family: 'Pridi', serif;
+            font-size: 28px;
+            color: #000000;
+        }
+
+        .info-section .cat-image {
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 20px;
+        }
+
+        /* New Style Adjustments */
+        .alert-danger {
+            margin-top: 10px;
+        }
+
+        .text-muted {
+            font-size: 14px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="/static/gambar/GAMBAR_KUCING3_LOGO-removebg-preview.png" alt="Logo">
+            <div class="pawdoct">PAWDOCT</div>
+        </div>
+        <nav class="nav-menu">
+            <a href="{{ url_for('main_bp.login') }}" class="nav-item">Login</a>
+        </nav>
+    </div>
+
+    <!-- Registration Form and Info Section -->
+    <div class="registration-section">
+        <!-- Form Container -->
+        <div class="form-container">
+            <div class="registration-title">Registrasi</div>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.username.label }}
+                    {{ form.username(class="form-control", id="username") }}
+                    <small class="form-text text-muted">Masukkan minimal 3 karakter untuk username.</small>
+                    {% for error in form.username.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email(class="form-control", id="email") }}
+                    <small class="form-text text-muted">Masukkan email yang aktif dan valid.</small>
+                    {% for error in form.email.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.password.label }}
+                    {{ form.password(class="form-control", id="password") }}
+                    <small class="form-text text-muted">Password minimal 8 karakter dan harus mengandung huruf, angka, serta karakter spesial.</small>
+                    {% for error in form.password.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.confirm_password.label }}
+                    {{ form.confirm_password(class="form-control", id="confirm_password") }}
+                    <small class="form-text text-muted">Pastikan password sama dengan yang di atas.</small>
+                    {% for error in form.confirm_password.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.phone.label }}
+                    {{ form.phone(class="form-control", id="phone") }}
+                    <small class="form-text text-muted">Masukkan nomor telepon aktif, hanya angka (10-15 digit).</small>
+                    {% for error in form.phone.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.gender.label }}
+                    {{ form.gender(class="form-control", id="gender") }}
+                    <small class="form-text text-muted">Pilih jenis kelamin Anda.</small>
+                    {% for error in form.gender.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.address.label }}
+                    {{ form.address(class="form-control", id="address") }}
+                    <small class="form-text text-muted">Masukkan alamat lengkap Anda (minimal 5 karakter).</small>
+                    {% for error in form.address.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="create-account-btn">Create Account</button>
+            </form>
+        </div>
+
+        <!-- Information Section -->
+        <div class="info-section">
+            <img src="/static/gambar/GAMBAR_KUCING2-removebg-preview.png" alt="Cat Image" class="cat-image">
+            <p>Ayo Register, Mudah kok tinggal isi formulir di samping. Yuk, untuk hewan kesayanganmu!</p>
+        </div>
+    </div>
+</body>
+
+</html>
