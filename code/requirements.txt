@@ -5,8 +5,9 @@ Flask-SQLAlchemy
 Werkzeug
 python-dotenv
 Flask-Migrate
-emailvalidator
+email_validator
 mysqlclient
 wtforms
 SQLAlchemy
 werkzeug
+Flask-mail
