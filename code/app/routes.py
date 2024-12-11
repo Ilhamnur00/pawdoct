@@ -12,7 +12,7 @@ main_bp = Blueprint('main_bp', __name__)
 
 def send_reset_email(user):
     token = user.get_reset_token()  # Memanggil metode untuk mendapatkan token reset
-    msg = Message('Reset Your Password',
+    msg = Message('PAWDOCT - Reset Your Password',
                   sender='noreply@pawdoct.my.id',
                   recipients=[user.email])
     
@@ -56,26 +56,34 @@ def signup():
         db.session.add(user)
         db.session.commit()
         
-        flash('Akun Anda telah berhasil dibuat! Silakan login.', 'success')
-        return redirect(url_for('main_bp.login'))  # Redirect ke halaman login agar pengguna login manual
+        # Login pengguna setelah registrasi
+        login_user(user)
+
+        if current_user.is_authenticated:
+            return redirect(url_for('main_bp.home'))  # Redirect ke home
+        else:
+            flash('Login gagal setelah registrasi. Silakan login secara manual.', 'danger')
+            return redirect(url_for('main_bp.login'))  # Redirect ke login
+
     return render_template('signup.html', form=form)
 
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
+        flash('Anda sudah login!', 'info')
         return redirect(url_for('main_bp.home'))  # Jika sudah login, arahkan ke home
 
     form = LoginForm()
     if form.validate_on_submit():
-        # Cek user berdasarkan username (atau email jika lebih memilih email)
-        user = User.query.filter_by(username=form.username.data).first()  # atau filter_by(email=form.username.data)
+        user = User.query.filter_by(username=form.username.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)  # Login pengguna
-            return redirect(url_for('main_bp.home'))  # Arahkan ke halaman home
+            flash('Login berhasil. Selamat datang kembali!', 'success')
+            return render_template('login.html', form=form, redirect_url=url_for('main_bp.home'))
         else:
-            flash('Login tidak berhasil. Periksa username dan password Anda.', 'danger')
+            flash('Login gagal. Periksa username dan password Anda.', 'danger')
 
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=form, redirect_url=None)
 
 @main_bp.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
@@ -85,9 +93,10 @@ def forgot_password():
         if user:
             send_reset_email(user)
             flash('Link reset password telah dikirim ke email Anda!', 'info')
+            return redirect(url_for('main_bp.login'))  # Langsung lakukan redirect ke halaman login
         else:
             flash('Email tidak ditemukan.', 'danger')
-        return redirect(url_for('main_bp.login'))
+            return redirect(url_for('main_bp.forgot_password'))  # Tetap di halaman forgot password untuk mencoba lagi
     return render_template('forgot_password.html', form=form)
 
 @main_bp.route('/reset_password/<token>', methods=['GET', 'POST'])
@@ -111,6 +120,7 @@ def set_password(self, password):
 @login_required
 def logout():
     logout_user()
+    flash('Anda telah berhasil logout.', 'info')
     return redirect(url_for('main_bp.login'))
 
 @main_bp.route('/home')
@@ -122,8 +132,6 @@ def home():
 @login_required
 def diagnosa():
     form = DiagnosaForm()
-    
-    # Ambil data gejala dari database
     gejala_list = Gejala.query.all()
     if not gejala_list:
         flash('Tidak ada gejala yang tersedia di database.', 'warning')
@@ -274,9 +282,17 @@ def edit_profile():
         # Verifikasi password
         if not current_user.check_password(form.current_password.data):
             flash("Password salah. Tidak dapat mengubah profil.", "danger")
-            return render_template('edit_profile.html', form=form)
+            return redirect(url_for('main_bp.edit_profile'))  # Redirect ke halaman edit profil
 
-        # Perbarui data pengguna
+        # Cek apakah ada perubahan pada data
+        if (form.username.data == current_user.username and
+            form.phone.data == current_user.phone and
+            form.gender.data == current_user.gender and
+            form.address.data == current_user.address):
+            flash("Tidak ada perubahan yang disimpan", "danger")
+            return redirect(url_for('main_bp.edit_profile'))  # Redirect jika tidak ada perubahan
+
+        # Perbarui data pengguna jika ada perubahan
         try:
             current_user.username = form.username.data
             current_user.phone = form.phone.data
@@ -285,9 +301,10 @@ def edit_profile():
             db.session.commit()  # Simpan perubahan ke database
 
             flash("Profil berhasil diperbarui!", "success")
-            return redirect(url_for('main_bp.profile'))  # Redirect ke halaman profil setelah berhasil
+            return redirect(url_for('main_bp.edit_profile'))  # Redirect ke halaman edit profil untuk menampilkan pesan
         except Exception as e:
             db.session.rollback()
             flash(f"Terjadi kesalahan: {e}", "danger")
+            return redirect(url_for('main_bp.edit_profile'))  # Redirect ke halaman edit profil
 
     return render_template('edit_profile.html', form=form)
