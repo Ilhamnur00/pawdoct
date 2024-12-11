@@ -45,7 +45,7 @@ class RegistrationForm(FlaskForm):
     )
     gender = SelectField(
         'Gender',
-        choices=[('male', 'Laki-laki'), ('female', 'Perempuan')],
+        choices=[('male', 'Male'), ('female', 'Female')],
         validators=[DataRequired(message="Pilih jenis kelamin.")]
     )
     address = StringField(
@@ -105,7 +105,7 @@ class UpdateProfileForm(FlaskForm):
     )
     gender = SelectField(
         'Gender',
-        choices=[('male', 'Laki-laki'), ('female', 'Perempuan')],
+        choices=[('male', 'Male'), ('female', 'Female')],
         validators=[DataRequired(message="Pilih jenis kelamin.")]
     )
     address = StringField(
