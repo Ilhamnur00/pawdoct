@@ -13,6 +13,8 @@ migrate = Migrate()
 login_manager = LoginManager()
 mail = Mail()
 
+login_manager.login_view = 'main_bp.login'
+
 def create_app():
     # Inisialisasi aplikasi Flask
     app = Flask(__name__, static_folder="static")  # Mengatur folder static
