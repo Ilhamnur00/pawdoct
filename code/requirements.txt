@@ -11,3 +11,5 @@ wtforms
 SQLAlchemy
 werkzeug
 Flask-mail
+Flask-pytest
+pytest
